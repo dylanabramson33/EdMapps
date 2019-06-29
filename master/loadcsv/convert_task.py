@@ -17,7 +17,7 @@ def ConvertToCsv():
     cwd = os.getcwd()
 
 
-    dir_path = os.path.expanduser('~/Desktop/Test')
+    dir_path = #INSERTPATHTOFOLDERHERE
     files_to_do_first = ['SMP Text.xlsx','Standards Codes and Verbiage.xlsx']
 
     for file in files_to_do_first:
