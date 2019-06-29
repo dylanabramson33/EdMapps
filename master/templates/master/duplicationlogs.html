@@ -1,0 +1,61 @@
+{% extends 'master/base.html' %}
+{% block headAndStyle %}
+{% load staticfiles %}
+
+<head>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.6/css/fixedColumns.dataTables.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'master/tablestyle.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/fixedcolumns/3.2.6/js/dataTables.fixedColumns.min.js"></script>
+<script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-pageLoadMore/1.0.0/js/dataTables.pageLoadMore.min.js"></script>
+
+</head>
+{% endblock %}
+{% block header %}
+<h2 id="headerTitle">EdMapp: Duplication History</h2>
+{% endblock %}
+{% block content %}
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<table id="DuplicationTable">
+			<thead>
+				<tr>
+					<th> Versions </th>
+					<th> Grades </th>
+					<th> Units </th>
+					<th> Lessons </th>
+					<th> Date and Time Duplicated </th>
+				</tr>
+				<tr>
+					<td> <input type="text" class="form-control" placeholder="Search"> </td>
+					<td> <input type="text" class="form-control" placeholder="Search"> </td>
+					<td> <input type="text" class="form-control" placeholder="Search"> </td>
+					<td> <input type="text" class="form-control" placeholder="Search"> </td>
+					<td> <input type="text" class="form-control" placeholder="Search"> </td>
+				</tr>
+			</thead>
+			<tbody>
+
+		{% for log in logs %}
+		<tr>
+			<td> {{log.versionList}} </td>
+			<td> {{log.gradeList}} </td>
+			<td> {{log.unitList}} </td>
+			<td> {{log.lessonList}} </td>
+			<td> {{log.timeCreated}} </td>
+		</tr>
+		{% endfor %}
+	</tbody>
+		</table>
+	</body>
+</html>
+{% endblock %}

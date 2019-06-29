@@ -1,0 +1,63 @@
+{% extends 'master/base.html' %}
+{% block headAndStyle %}
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{% static 'master/tablestyle.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+{% endblock %}
+{% block header %}
+	<h2 id="headerTitle">EdMapp: Metadata Row Editor</h2>
+{% endblock %}
+{% block content %}
+
+<div id="detail-header">
+
+<div class="detail-column">
+		<h2 class="detail-column-heading">Version</h2>
+		<p>{{lesson.version}}</p>
+</div>
+
+<div class="detail-column">
+		<h2 class="detail-column-heading">Grade</h2>
+		<p>{{lesson.grade}}</p>
+</div>
+
+<div class="detail-column">
+		<h2 class="detail-column-heading">Unit</h2>
+		<p>{{lesson.unit}}</p>
+</div>
+
+<div class="detail-column">
+		<h2 class="detail-column-heading">Lesson</h2>
+		<p>{{lesson.lesson}}</p>
+</div>
+
+<div class="detail-column">
+		<h2 class="detail-column-heading">Title</h2>
+		<p>{{lessonName.lessonName}}</p>
+</div>
+
+</div>
+
+<div id="add_edit">
+
+<form id="selection" method="POST" enctype="multipart/form-data">{% csrf_token %}
+	<input type="hidden" name="next" value="{{ request.path }}">
+<table id="TableEdit1_te">
+
+{% for form in forms %}
+    {{ formName }}
+   	{{ form.as_table }}
+{% endfor %}
+
+</table>
+	<input class="detail-button" form="selection" type="submit">
+</form>
+
+</div>
+{% endblock %}

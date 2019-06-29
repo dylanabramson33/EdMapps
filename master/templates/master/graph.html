@@ -1,0 +1,8 @@
+{% extends 'master/base.html' %}
+{% block headAndStyle %}
+{% load staticfiles %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+</script>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends 'master/base.html' %}
+{% block headAndStyle %}
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="{% static 'master/tablestyle.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+{% endblock %}
+{% block header %}
+	<h2 id="headerTitle">EdMapp: Data Export</h2>
+{% endblock %}
+{% block content %}
+
+<nav>
+	<ul id="table-navigation" class="nav nav-pills">
+    <li><a id="lesson_tab" class="tablinks nav-item nav-link active" onclick="openCity(event, 'Lesson')">Lesson</a></li>
+  	<li><a id="meta_tab" class="tablinks nav-item nav-link" onclick="openCity(event, 'Metadata')">Metadata</a></li>
+  </ul>
+	<ul id="table-navigation-right" class="nav navbar-nav navbar-right">
+		<input id="submitbutton" form="export_submit" type="submit">
+	</ul>
+</nav>
+
+<div id="Lesson" class="tabcontent">
+	<div id="sidebar" class="w3-sidebar selectionpane-color w3-bar-block">
+		<div id="lessonSelect">Lesson Selections </div>
+		<div id="versionSelect">Versions: </div>
+		<div id="selectedVersions">All Versions</div>
+		<div id="gradeSelect">Grades: </div>
+		<div id="selectedGrades">All Grades</div>
+		<div id="unitSelect">Units: </div>
+		<div id="selectedUnits">All Units</div>
+		<div id="sublessonSelect">Lessons: </div>
+		<div id="selectedLessons">All Lessons</div>
+		<div id="metaSelect">Metadata Selections </div>
+		<div id="selectedMeta">No Metadata Selected</div>
+	</div>
+	<div class="selector-contain">
+  	<div class="header-column">
+  		<h2 class="selectortext">Lesson Exporter</h2>
+  		<p class="selectortext">Select which lessons you would like to export</p>
+  	</div>
+  </div>
+
+<form method="POST" id = "export_submit"> {% csrf_token %}
+	<div class="lesson-selector">
+		<div class="lesson-column">
+			<h2 class="selectortext">Version</h2>
+				<div class="lesson-search-bar">
+					<input id="search-version" class="form-control" placeholder="Search" />
+				</div>
+				<div class="selectall">
+					<button type="button" id="selectall-Version">All</button>
+					<button type="button" id="unselectall-Version">None</button>
+				</div>
+
+			{% for version in versionList %}
+				<label class="container version-container">{{ version }}
+					<input type="checkbox" name = "Version" value="{{ version }}">
+					<span class="checkmark"></span>
+				</label>
+
+			{% endfor %}
+
+		</div>
+		<div class="lesson-column grade-column">
+			<h2 class="selectortext">Grade</h2>
+			<div class="lesson-search-bar">
+				<input name="filter" id="search-grade" class="form-control" value="" placeholder="Search"/>
+			</div>
+			<div class="selectall">
+				<button type="button" id="selectall-Grade">All</button>
+				<button type="button" id="unselectall-Grade">None</button>
+			</div>
+			{% for grade in gradeList %}
+				<label class="container grade-container" data-filter="{{ grade }}">{{ grade }}
+					<input type="checkbox" name = "Grade" value="{{ grade }}">
+					<span class="checkmark"></span>
+				</label>
+
+			{% endfor %}
+
+		</div>
+		<div class="lesson-column unit-column">
+			<h2 class="selectortext">Unit</h2>
+			<div class="lesson-search-bar">
+				<input name="filter" id="search-unit" class="form-control" value="" placeholder="Search" />
+			</div>
+			<div class="selectall">
+				<button type="button" id="selectall-Unit">All</button>
+				<button type="button" id="unselectall-Unit">None</button>
+			</div>
+			{% for unit in unitList %}
+
+				<label class="container unit-container" data-filter="{{ unit }}">{{ unit }}
+					<input type="checkbox" name = "Unit" value="{{ unit }}">
+					<span class="checkmark"></span>
+				</label>
+
+			{% endfor %}
+
+
+		</div>
+		<div class="lesson-column sublesson-column">
+			<h2 class="selectortext">Lesson</h2>
+			<div class="lesson-search-bar">
+				<input id="search-sublesson" class="form-control" value="" placeholder="Search"/>
+			</div>
+			<div class="selectall">
+				<button type="button" id="selectall-Lesson">All</button>
+				<button type="button" id="unselectall-Lesson">None</button>
+			</div>
+			{% for lesson in lessonList %}
+
+				<label class="container lesson-container" data-filter="{{ lesson }}">{{ lesson }}
+					<input class="checkbox" type="checkbox" name = "Lesson" value="{{ lesson }}">
+					<span class="checkmark"></span>
+				</label>
+
+			{% endfor %}
+		</div>
+	</div>
+
+</div>
+
+<div id="Metadata" class="tabcontent">
+	<div id="sidebar" class="w3-sidebar selectionpane-color w3-bar-block">
+		<div id="lessonSelect">Lesson Selections </div>
+		<div id="versionSelect">Versions: </div>
+		<div id="selectedVersionsB">All Versions</div>
+		<div id="gradeSelect">Grades: </div>
+		<div id="selectedGradesB">All Grades</div>
+		<div id="unitSelect">Units: </div>
+		<div id="selectedUnitsB">All Units</div>
+		<div id="sublessonSelect">Lessons: </div>
+		<div id="selectedLessonsB">All Lessons</div>
+		<div id="metaSelect">Metadata Selections </div>
+		<div id="selectedMetaB">No Metadata Selected</div>
+	</div>
+	<div class="selector-contain">
+  	<div class="header-column">
+  		<h2 class="selectortext">Metadata Selector</h2>
+  		<p class="selectortext">Select which metadata fields you would like to export</p>
+  	</div>
+  </div>
+	<div class="metadata-search-bar">
+		<input name="filter" id="search-meta" class="form-control" value="" placeholder="Search"/>
+	</div>
+	<div class="metadata-selector">
+		{% for model in modelList %}
+			{% if forloop.first %}
+			<div class="metadata-column" id="metadata-column-1">
+			{% endif %}
+				<label class="container meta-container"  data-filter="{{ model }}"> {{ model }}
+					<input type="checkbox" id="metacheck" name = 'Meta' value="{{ model }}">
+					<span class="checkmark"></span>
+				</label>
+						{% if forloop.counter|divisibleby:half_modelList %}
+						</div><div class="metadata-column" id="metadata-column-1">
+						{% endif %}
+			{% if forloop.last %}
+			</div>
+			{% endif %}
+
+		{% endfor %}
+
+	</div>
+</div>
+</form>
+
+{% endblock %}

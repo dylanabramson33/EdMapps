@@ -1,0 +1,890 @@
+{% extends 'master/base.html' %}
+{% block headAndStyle %}
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/3.2.6/css/fixedColumns.dataTables.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{% static 'master/tablestyle.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/fixedcolumns/3.2.6/js/dataTables.fixedColumns.min.js"></script>
+  <script type="text/javascript" src="//gyrocode.github.io/jquery-datatables-pageLoadMore/1.0.0/js/dataTables.pageLoadMore.min.js"></script>
+
+</head>
+{% endblock %}
+{% block header %}
+	<h2 id="headerTitle">EdMapp: Search & Edit -- Data Selection</h2>
+{% endblock %}
+{% block content %}
+
+<nav>
+  <div class="container-fluid">
+  	<ul id="table-navigation" class="nav nav-pills">
+      <li><a id="lesson_tab" class="tablinks nav-item nav-link active" onclick="openCity(event, 'Lesson')">Lesson</a></li>
+    	<li><a id="meta_tab" class="tablinks nav-item nav-link" onclick="openCity(event, 'Metadata')">Metadata</a></li>
+    	<li><a id="tbl_tab" class="tablinks nav-item nav-link" onclick="openCity(event, 'Table')">Table</a></li>
+    </ul>
+      <!-- <button id="addrowbutton" onclick="addNewRow()">Add New Row</button> -->
+    <ul id="table-navigation-right" class="nav navbar-nav navbar-right">
+      <li><a id="expand_btn">Expand</a></li>
+      <li><a id="addrowbutton">Add Row</a></li>
+      <input id="submitbutton" form="table_submit" type="submit">
+			<a href="{% url 'visualize' %}"> Visualize </a>
+			<form method = "POST" name = "export"> {% csrf_token %}
+				<input  name="export" type="submit" value = "Export">
+			</form>
+    </ul>
+  </div>
+</nav>
+
+<div id="Lesson" class="tabcontent">
+	<div id="sidebar" class="w3-sidebar selectionpane-color w3-bar-block">
+		<div id="lessonSelect">Lesson Selections </div>
+		<div id="versionSelect">Versions: </div>
+		<div id="selectedVersions">All Versions</div>
+		<div id="gradeSelect">Grades: </div>
+		<div id="selectedGrades">All Grades</div>
+		<div id="unitSelect">Units: </div>
+		<div id="selectedUnits">All Units</div>
+		<div id="sublessonSelect">Lessons: </div>
+		<div id="selectedLessons">All Lessons</div>
+		<div id="metaSelect">Metadata Selections </div>
+		<div id="selectedMeta">No Metadata Selected</div>
+	</div>
+  <div class="selector-contain">
+  	<div class="header-column">
+  		<h2 class="selectortext">Lesson Selector</h2>
+  		<p class="selectortext">Select which lessons you would like to explore</p>
+  	</div>
+  </div>
+
+<form id="table_submit" method="POST"> {% csrf_token %}
+	<div class="lesson-selector">
+		<div class="lesson-column version-column">
+			<h2 class="selectortext">Version</h2>
+				<div class="lesson-search-bar">
+					<input id="search-version" class="form-control" placeholder="Search" />
+				</div>
+				<div class="selectall">
+					<button type="button" id="selectall-Version">All</button>
+					<button type="button" id="unselectall-Version">None</button>
+				</div>
+			{% for version in versionList %}
+				<label class="container version-container">{{ version }}
+					{% if version in previouslyCheckedVersion%}
+					<input class="chkbox" type="checkbox" name = "Version" value="{{ version }}" checked>
+					{% else %}
+					<input class="chkbox" type="checkbox" name = "Version" value="{{ version }}">
+					{% endif %}
+					<span class="checkmark"></span>
+				</label>
+			{% endfor %}
+		</div>
+		<div class="lesson-column grade-column">
+			<h2 class="selectortext">Grade</h2>
+			<div class="lesson-search-bar">
+				<input name="filter" id="search-grade" class="form-control" placeholder="Search" value=""/>
+			</div>
+			<div class="selectall">
+				<button type="button" id="selectall-Grade">All</button>
+				<button type="button" id="unselectall-Grade">None</button>
+			</div>
+			{% for grade in gradeList %}
+				<label class="container grade-container" data-filter="{{ grade }}">{{ grade }}
+					{% if grade in previouslyCheckedGrade %}
+					<input class="chkbox" type="checkbox" name = "Grade" value="{{ grade }}" checked>
+					{% else %}
+					<input class="chkbox" type="checkbox" name = "Grade" value="{{ grade }}">
+					{% endif %}
+					<span class="checkmark"></span>
+				</label>
+			{% endfor %}
+		</div>
+		<div class="lesson-column unit-column">
+			<h2 class="selectortext">Unit</h2>
+			<div class="lesson-search-bar">
+				<input name="filter" id="search-unit" placeholder="Search" class="form-control" value="" />
+			</div>
+			<div class="selectall">
+				<button type="button" id="selectall-Unit">All</button>
+				<button type="button" id="unselectall-Unit">None</button>
+			</div>
+			{% for unit in unitList %}
+				<label class="container unit-container" data-filter="{{ unit }}">{{ unit }}
+					{% if unit in previouslyCheckedUnit %}
+					<input class="chkbox" type="checkbox" name = "Unit" value="{{ unit }}" checked>
+					{% else %}
+					<input class="chkbox" type="checkbox" name = "Unit" value="{{ unit }}">
+					{% endif %}
+					<span class="checkmark"></span>
+				</label>
+			{% endfor %}
+		</div>
+		<div class="lesson-column sublesson-column">
+			<h2 class="selectortext">Lesson</h2>
+			<div class="lesson-search-bar">
+				<input id="search-sublesson" class="form-control" placeholder="Search" value="" />
+			</div>
+			<div class="selectall">
+				<button type="button" id="selectall-Lesson">All</button>
+				<button type="button" id="unselectall-Lesson">None</button>
+			</div>
+			{% for lesson in lessonList %}
+				<label class="container lesson-container" data-filter="{{ lesson }}">{{ lesson }}
+					{% if lesson in previouslyCheckedLesson %}
+					<input class="chkbox" type="checkbox" name = "Lesson" value="{{ lesson }}" checked>
+					{% else %}
+					<input class="chkbox" type="checkbox" name = "Lesson" value="{{ lesson }}">
+					{% endif %}
+					<span class="checkmark"></span>
+				</label>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+<div id="Metadata" class="tabcontent">
+	<div id="sidebar" class="w3-sidebar selectionpane-color w3-bar-block">
+		<div id="lessonSelect">Lesson Selections </div>
+		<div id="versionSelect">Versions: </div>
+		<div id="selectedVersionsB">All Versions</div>
+		<div id="gradeSelect">Grades: </div>
+		<div id="selectedGradesB">All Grades</div>
+		<div id="unitSelect">Units: </div>
+		<div id="selectedUnitsB">All Units</div>
+		<div id="sublessonSelect">Lessons: </div>
+		<div id="selectedLessonsB">All Lessons</div>
+		<div id="metaSelect">Metadata Selections </div>
+		<div id="selectedMetaB">No Metadata Selected</div>
+	</div>
+  <div class="selector-contain">
+  	<div class="header-column">
+  		<h2 class="selectortext">Metadata Selector</h2>
+  		<p class="selectortext">Select which metadata fields you would like to explore</p>
+  	</div>
+  </div>
+	<div class="metadata-search-bar">
+		<input name="filter" placeholder="Search" class="form-control search-meta" value=""/>
+	</div>
+	<div class="metadata-selector">
+		{% for model in modelList %}
+			{% if forloop.first %}
+			<div class="metadata-column" id="metadata-column-1">
+			{% endif %}
+				<label class="container meta-container"  data-filter="{{ model }}"> {{ model }}
+					<input class="chkbox" type="checkbox" id="metacheck" name = 'Meta' value="{{ model }}">
+					<span class="checkmark"></span>
+				</label>
+						{% if forloop.counter|divisibleby:half_modelList %}
+						</div><div class="metadata-column" id="metadata-column-1">
+						{% endif %}
+			{% if forloop.last %}
+			</div>
+			{% endif %}
+		{% endfor %}
+
+	</div>
+</div>
+</form>
+
+
+{% if table %}
+	<div id = "tableview">
+        <table id ="myTable" class="table table-light thead-dark order-column">
+        <thead>
+        <tr>
+          	<th id="fixed1" class = "filter fixed-col edit" > Edit </th>
+          	<th id="fixed2" class = "filter fixed-col" > Version  </th>
+          	<th id="fixed3" class = "filter fixed-col" > Grade  </th>
+          	<th id="fixed4" class = "filter fixed-col" > Unit  </th>
+          	<th id="fixed5" class = "filter fixed-col" > Lesson  </th>
+     	{% if 'DepthOfKnowledge' in metadata %}
+          	<th id="DepthOfKnowledge" class = "filter" > TG Page </th>
+          	<th id="DepthOfKnowledge" class = "filter" > Item </th>
+          	<th id="DepthOfKnowledge" class = "filter" > Depth of Knowledge </th>
+        {% endif %}
+        {% if 'Progression' in metadata %}
+          	<th id="Progression" class = "filter" > Prerequisite Lesson 3 </th>
+          	<th id="Progression" class = "filter" > Prerequisite Lesson 2 </th>
+          	<th id="Progression" class = "filter" > Prerequisite Lesson 1 </th>
+          	<th id="Progression" class = "filter" > FutureLesson 1 </th>
+          	<th id="Progression" class = "filter" > FutureLesson 2 </th>
+          	<th id="Progression" class = "filter" > FutureLesson 3 </th>
+        {% endif %}
+        {% if 'ActivitySheet' in metadata %}
+          <th id="ActivitySheet" class = "filter" > Activity Sheet </th>
+        {% endif %}
+        {% if 'AssessmentItemType' in metadata %}
+          	<th id="AssessmentItemType" class = "filter" > Component </th>
+          	<th id="AssessmentItemType" class = "filter" > Page </th>
+         	<th id="AssessmentItemType" class = "filter" > Item </th>
+         	<th id="AssessmentItemType" class = "filter" > Item Type </th>
+        {% endif %}
+		{% if 'ContentObjective' in metadata %}
+			<th id="ContentObjective" class = "filter" > Content Objective </th>
+		{% endif %}
+		{% if 'EnrichmentActivities' in metadata %}
+			<th id="EnrichmentActivities" class = "filter" > File Name </th>
+			<th id="EnrichmentActivities" class = "filter" > Title </th>
+		{% endif %}
+		{% if 'Contexts' in metadata %}
+			<th id="Contexts" class = "filter" > Page </th>
+			<th id="Contexts" class = "filter" > Item </th>
+			<th id="Contexts" class = "filter" > Context </th>
+			<th id="Contexts" class = "filter" > Issues </th>
+		{% endif %}
+		{% if 'CrossCurricularConnections' in metadata %}
+			<th id="CrossCurricularConnections" class = "filter" > Component </th>
+			<th id="CrossCurricularConnections" class = "filter" > Content Area </th>
+		{% endif %}
+		{% if 'DigitalTools' in metadata %}
+			<th id="DigitalTools" class = "filter" > Base Ten Blocks Tool </th>
+			<th id="DigitalTools" class = "filter" > Perimeter and Area Tool </th>
+			<th id="DigitalTools" class = "filter" > Fraction Models Tool </th>
+			<th id="DigitalTools" class = "filter" > Number Line Tool </th>
+			<th id="DigitalTools" class = "filter" > Multiplication Models Tool </th>
+			<th id="DigitalTools" class = "filter" > Counters Connecting Cubes Tool</th>
+		{% endif %}
+		{% if 'EthnicityGenderAbility' in metadata %}
+			<th id="EthnicityGenderAbility" class = "filter" > Page </th>
+			<th id="EthnicityGenderAbility" class = "filter" > Item </th>
+			<th id="EthnicityGenderAbility" class = "filter" > Type </th>
+			<th id="EthnicityGenderAbility" class = "filter" > Ethnicity </th>
+			<th id="EthnicityGenderAbility" class = "filter" > Gender </th>
+			<th id="EthnicityGenderAbility" class = "filter" > Ability </th>
+			<th id="EthnicityGenderAbility" class = "filter" > Correct Or Incorrect </th>
+		{% endif %}
+		{% if 'FluencyActivities' in metadata %}
+			<th id="FluencyActivities" class = "filter" > Fluency Practice Title </th>
+		{% endif %}
+		{% if 'GraphicOrganizers' in metadata %}
+			<th id="GraphicOrganizers" class = "filter" > Page </th>
+			<th id="GraphicOrganizers" class = "filter" > Graphic Organizer </th>
+		{% endif %}
+		{% if 'InteractiveTutorial' in metadata %}
+			<th id="InteractiveTutorial" class = "filter" > Interactive Tutorial </th>
+			<th id="InteractiveTutorial" class = "filter" > Video ID </th>
+			<th id="InteractiveTutorial" class = "filter" > Objective </th>
+			<th id="InteractiveTutorial" class = "filter" > Estimated Time </th>
+		{% endif %}
+		{% if 'LanguageObjectives' in metadata %}
+			<th id="LanguageObjectives" class = "filter" > Language Objective </th>
+		{% endif %}
+		{% if 'LearningGames' in metadata %}
+			<th id="LearningGames" class = "filter" > Learning Game </th>
+		{% endif %}
+		{% if 'LearningProgressionText' in metadata %}
+			<th id="LearningProgressionText" class = "filter" > Previous Learning </th>
+			<th id="LearningProgressionText" class = "filter" > In This Lesson </th>
+			<th id="LearningProgressionText" class = "filter" > Subsequent Learning </th>
+		{% endif %}
+		{% if 'LessonNames' in metadata %}
+			<th id="LessonNames" class = "filter" > Lesson Name </th>
+		{% endif %}
+		{% if 'Manipulatives' in metadata %}
+			<th id="Manipulatives" class = "filter" > Manipulative Used </th>
+			<th id="Manipulatives" class = "filter" > Quantity </th>
+			<th id="Manipulatives" class = "filter" > Use </th>
+      <th id="Manipulatives" class = "filter" > Required </th>
+			<th id="Manipulatives" class = "filter" > Lesson </th>
+			<th id="Manipulatives" class = "filter" > Activities </th>
+		{% endif %}
+		{% if 'MathCenterActivities' in metadata %}
+			<th id="MathCenterActivities" class = "filter" > Title </th>
+			<th id="MathCenterActivities" class = "filter" > File Name </th>
+		{% endif %}
+		{% if 'Models' in metadata %}
+			<th id="Models" class = "filter" > Model </th>
+		{% endif %}
+		{% if 'PrerequisiteLessons' in metadata %}
+			<th id="PrerequisiteLessons" class = "filter" > Prerequisite Lesson Grade </th>
+			<th id="PrerequisiteLessons" class = "filter" > Prerequisite Lesson Number </th>
+		{% endif %}
+		{% if 'PrerequisiteInteractiveTutorial' in metadata %}
+			<th id="PrerequisiteInteractiveTutorial" class = "filter" > Prerequisite Interactive Tutorial </th>
+			<th id="PrerequisiteInteractiveTutorial" class = "filter" > Prerequisite Video ID </th>
+			<th id="PrerequisiteInteractiveTutorial" class = "filter" > Prerequisite Objective </th>
+			<th id="PrerequisiteInteractiveTutorial" class = "filter" > Prerequisite Estimated Time </th>
+		{% endif %}
+		{% if 'PrerequisiteSkill' in metadata %}
+			<th id="PrerequisiteSkill" class = "filter" > Prerequisite Skill </th>
+		{% endif %}
+		{% if 'Rubrics' in metadata %}
+			<th id="Rubrics" class = "filter" > Page </th>
+			<th id="Rubrics" class = "filter" > Component </th>
+			<th id="Rubrics" class = "filter" > Type of Rubric </th>
+		{% endif %}
+
+		{% if 'ToolsforInstruction' in metadata %}
+			<th id="ToolsforInstruction" class = "filter" > Tool for Instruction </th>
+		{% endif %}
+		{% if 'Vocabulary' in metadata %}
+			<th id="Vocabulary" class = "filter" > Academic? </th>
+      <th id="Vocabulary" class = "filter" > Vocabulary Term </th>
+			<th id="Vocabulary" class = "filter" > Definition </th>
+			<th id="Vocabulary" class = "filter" > New Or ReviewV </th>
+			<th id="Vocabulary" class = "filter" > Vocabulary Box Page </th>
+		{% endif %}
+		{% if 'VisualModels' in metadata %}
+			<th id="VisualModels" class = "filter" > Page with Visual Model </th>
+		{% endif %}
+		{% if 'AcademicVocabulary' in metadata %}
+			<th id="VisualModels" class = "filter" > Word </th>
+			<th id="VisualModels" class = "filter" > Definition </th>
+			<th id="VisualModels" class = "filter" > Vocabulary word definition if found in grade level's glossary </th>
+			<th id="VisualModels" class = "filter" > Notes </th>
+		{% endif %}
+		{% if 'StandardsInLessons' in metadata %}
+			<th id="StandardsInLessons" class = "filter" > Standard Code </th>
+			<th id="StandardsInLessons" class = "filter" > Focus Developing Or Applied </th>
+      <th id="StandardsInLessons" class = "filter" > Standard Wording</th>
+			<th id="StandardsInLessons" class = "filter" > Major Suporting Or Additional </th>
+		{% endif %}
+		{% if 'SMPsInLessons' in metadata %}
+			<th id="SMPsInLessons" class = "filter" > SMP </th>
+			<th id="SMPsInLessons" class = "filter" > SMPText </th>
+		{% endif %}
+		{% if 'StandardsInUnits' in metadata %}
+			<th id="StandardInUnits" class = "filter" > Standard Code </th>
+			<th id="StandardInUnits" class = "filter" > Component </th>
+			<th id="StandardInUnits" class = "filter" > Item </th>
+			<th id="StandardInUnits" class = "filter" > Standard Wording </th>
+			<th class = "StandardInUnits" > Major Suporting Or Additional </th>
+		{% endif %}
+
+    </tr>
+		<tr>
+			<td class = "filter edit" > Edit </td>
+			<td class = "filter fixed-col" > Version  </td>
+			<td class = "filter fixed-col" > Grade  </td>
+			<td class = "filter fixed-col" > Unit  </td>
+			<td class = "filter fixed-col" > Lesson  </td>
+		{% if 'DepthOfKnowledge' in metadata %}
+			<td class = "filter" > TG Page </td>
+			<td class = "filter" > Item </td>
+			<td class = "filter" > Depth of Knowledge </td>
+		{% endif %}
+		{% if 'Progression' in metadata %}
+			<td class = "filter" > Prerequisite Lesson 3 </td>
+			<td class = "filter" > Prerequisite Lesson 2 </td>
+			<td class = "filter" > Prerequisite Lesson 1 </td>
+			<td class = "filter" > FutureLesson 1 </td>
+			<td class = "filter" > FutureLesson 2 </td>
+			<td class = "filter" > FutureLesson 3 </td>
+		{% endif %}
+		{% if 'ActivitySheet' in metadata %}
+			<td class = "filter" > Activity Sheet </td>
+		{% endif %}
+		{% if 'AssessmentItemType' in metadata %}
+			<td class = "filter" > Component </td>
+			<td class = "filter" > Page </td>
+			<td class = "filter" > Item </td>
+			<td class = "filter" > Item Type </td>
+		{% endif %}
+		{% if 'ContentObjective' in metadata %}
+			<td class = "filter" > Content Objective </td>
+		{% endif %}
+		{% if 'EnrichmentActivities' in metadata %}
+			<td class = "filter" > File Name </td>
+			<td class = "filter" > Title </td>
+		{% endif %}
+		{% if 'Contexts' in metadata %}
+			<td class = "filter" > Page </td>
+			<td class = "filter" > Item </td>
+			<td class = "filter" > Context </td>
+			<td class = "filter" > Issues </td>
+		{% endif %}
+		{% if 'CrossCurricularConnections' in metadata %}
+			<td class = "filter" > Component </td>
+			<td class = "filter" > Content Area </td>
+		{% endif %}
+		{% if 'DigitalTools' in metadata %}
+			<td class = "filter" > Base Ten Blocks Tool </td>
+			<td class = "filter" > Perimeter and Area Tool </td>
+			<td class = "filter" > Fraction Models Tool </td>
+			<td class = "filter" > Number Line Tool </td>
+			<td class = "filter" > Multiplication Models Tool </td>
+			<td class = "filter" > Counters Connecting Cubes Tool</td>
+		{% endif %}
+		{% if 'EthnicityGenderAbility' in metadata %}
+			<td class = "filter" > Page </td>
+			<td class = "filter" > Item </td>
+			<td class = "filter" > Type </td>
+			<td class = "filter" > Ethnicity </td>
+			<td class = "filter" > Gender </td>
+			<td class = "filter" > Ability </td>
+			<td class = "filter" > Correct Or Incorrect </td>
+		{% endif %}
+		{% if 'FluencyActivities' in metadata %}
+			<td class = "filter" > Fluency Practice Title </td>
+		{% endif %}
+		{% if 'GraphicOrganizers' in metadata %}
+			<td class = "filter" > Page </td>
+			<td class = "filter" > Graphic Organizer </td>
+		{% endif %}
+		{% if 'InteractiveTutorial' in metadata %}
+			<td class = "filter" > Interactive Tutorial </td>
+			<td class = "filter" > Video ID </td>
+			<td class = "filter" > Objective </td>
+			<td class = "filter" > Estimated Time </td>
+		{% endif %}
+		{% if 'LanguageObjectives' in metadata %}
+			<td class = "filter" > Language Objective </td>
+		{% endif %}
+		{% if 'LearningGames' in metadata %}
+			<td class = "filter" > Learning Game </td>
+		{% endif %}
+		{% if 'LearningProgressionText' in metadata %}
+			<td class = "filter" > Previous Learning </td>
+			<td class = "filter" > In This Lesson </td>
+			<td class = "filter" > Subsequent Learning </td>
+		{% endif %}
+		{% if 'LessonNames' in metadata %}
+			<td class = "filter" > Lesson Name </td>
+		{% endif %}
+		{% if 'Manipulatives' in metadata %}
+			<td class = "filter" > Manipulative Used </td>
+			<td class = "filter" > Quantity </td>
+			<td class = "filter" > Use </td>
+			<td class = "filter" > Required </td>
+			<td class = "filter" > Lesson </td>
+			<td class = "filter" > Activities </td>
+		{% endif %}
+		{% if 'MathCenterActivities' in metadata %}
+			<td class = "filter" > Title </td>
+			<td class = "filter" > File Name </td>
+		{% endif %}
+		{% if 'Models' in metadata %}
+			<td class = "filter" > Model </td>
+		{% endif %}
+		{% if 'PrerequisiteLessons' in metadata %}
+			<td class = "filter" > Prerequisite Lesson Grade </td>
+			<td class = "filter" > Prerequisite Lesson Number </td>
+		{% endif %}
+		{% if 'PrerequisiteInteractiveTutorial' in metadata %}
+			<td class = "filter" > Prerequisite Interactive Tutorial </td>
+			<td class = "filter" > Prerequisite Video ID </td>
+			<td class = "filter" > Prerequisite Objective </td>
+			<td class = "filter" > Prerequisite Estimated Time </td>
+		{% endif %}
+		{% if 'PrerequisiteSkill' in metadata %}
+			<td class = "filter" > Prerequisite Skill </td>
+		{% endif %}
+		{% if 'Rubrics' in metadata %}
+			<td class = "filter" > Page </td>
+			<td class = "filter" > Component </td>
+			<td class = "filter" > Type of Rubric </td>
+		{% endif %}
+
+		{% if 'ToolsforInstruction' in metadata %}
+			<td class = "filter" > Tool for Instruction </td>
+		{% endif %}
+		{% if 'Vocabulary' in metadata %}
+			<td id="Vocabulary" class = "filter" > Academic? </td>
+			<td id="Vocabulary" class = "filter" > Vocabulary Term </td>
+			<td id="Vocabulary" class = "filter" > Definition </td>
+			<td id="Vocabulary" class = "filter" > New Or ReviewV </td>
+			<td id="Vocabulary" class = "filter" > Vocabulary Box Page </td>
+		{% endif %}
+		{% if 'VisualModels' in metadata %}
+			<td class = "filter" > Page with Visual Model </td>
+		{% endif %}
+		{% if 'AcademicVocabulary' in metadata %}
+			<td id="VisualModels" class = "filter" > Word </td>
+			<td id="VisualModels" class = "filter" > Definition </td>
+			<td id="VisualModels" class = "filter" > Vocabulary word definition if found in grade level's glossary </td>
+			<td id="VisualModels" class = "filter" > Notes </td>
+		{% endif %}
+		{% if 'StandardsInLessons' in metadata %}
+			<td class = "StandardsInLessons" > Standard Code </td>
+			<td class = "StandardsInLessons" > Focus Developing Or Applied </td>
+			<td class = "StandardsInLessons" > Standard Wording</td>
+			<td class = "StandardsInLessons" > Major Suporting Or Additional </td>
+		{% endif %}
+		{% if 'SMPsInLessons' in metadata %}
+			<td class = "SMPsInLessons" > SMP </td>
+			<td class = "SMPsInLessons" > SMP Text </td>
+		{% endif %}
+		{% if 'StandardsInUnits' in metadata %}
+			<td id="StandardInUnits" class = "filter" > Standard Code </td>
+			<td id="StandardInUnits" class = "filter" > Component </td>
+      <td id="StandardInUnits" class = "filter" > Item </td>
+			<td id="StandardInUnits" class = "filter" > Standard Wording </td>
+			<td class = "StandardInUnits" > Major Suporting Or Additional </td>
+		{% endif %}
+
+	</tr>
+   </thead>
+<tbody>
+  	{% for lesson in lessons %}
+  	<tr name="{{lesson.master}}" class = "bodyrow">
+      {% if request.user.is_superuser %}
+      	<td class = "id" id = "Edit" > <a href="{% url 'detail' lesson.unionedkey %}"> Edit </a></td>
+      {% else %}
+        <td></td>
+      {% endif %}
+    	 	<td class = "id"> {{ lesson.version }} </td>
+      	<td class = "id"> {{ lesson.grade|default_if_none:"" }} </td>
+      	<td class = "id"> {{ lesson.unit|default_if_none:"" }} </td>
+      	<td class = "id"> {{ lesson.lesson|default_if_none:"" }} </td>
+    	{% if 'DepthOfKnowledge' in metadata %}
+      	{% for dok in lesson.DepthOfKnowledge.all %}
+        	<td class = "DOK"> {{ dok.tgPage }} </td>
+        	<td class = "DOK"> {{ dok.dokitem }} </td>
+        	<td class = "DOK"> {{ dok.dok }} </td>
+            {% empty %}
+            <td class = "DOK">  </td>
+            <td class = "DOK">  </td>
+            <td class = "DOK">  </td>
+      	{% endfor %}
+      	{% endif %}
+      	{% if 'Progression' in metadata %}
+      	{% for progression in lesson.Progression.all %}
+            <td class = "Progression"> {{ progression.PrerequisiteLesson3 }} </td>
+            <td class = "Progression"> {{ progression.PrerequisiteLesson2 }} </td>
+            <td class = "Progression"> {{ progression.PrerequisiteLesson1 }} </td>
+            <td class = "Progression"> {{ progression.FutureLesson1 }} </td>
+            <td class = "Progression"> {{ progression.FutureLesson2 }} </td>
+            <td class = "Progression"> {{ progression.FutureLesson3 }} </td>
+        {% empty %}
+            <td class = "Progression">  </td>
+            <td class = "Progression">  </td>
+            <td class = "Progression">  </td>
+            <td class = "Progression">  </td>
+            <td class = "Progression">  </td>
+            <td class = "Progression">  </td>
+      	{% endfor %}
+      	{% endif %}
+      	{% if 'ActivitySheet' in metadata %}
+      	{% for act in lesson.ActivitySheet.all %}
+            <td class = "ActivitySheet"> {{ act.activitySheetName }} </td>
+        {% empty %}
+        	<td class = "ActivitySheet">  </td>
+      	{% endfor %}
+      	{% endif %}
+      	{% if 'AssessmentItemType' in metadata %}
+      	{% for assess in lesson.AssessmentItemType.all %}
+            <td class = "AssessmentItemType"> {{ assess.component }} </td>
+            <td class = "AssessmentItemType"> {{ assess.page }} </td>
+            <td class = "AssessmentItemType"> {{ assess.item }} </td>
+            <td class = "AssessmentItemType"> {{ assess.itemType }} </td>
+        {% empty %}
+            <td class = "AssessmentItemType">  </td>
+            <td class = "AssessmentItemType">  </td>
+            <td class = "AssessmentItemType">  </td>
+            <td class = "AssessmentItemType">  </td>
+      	{% endfor %}
+      	{% endif %}
+      	{% if 'ContentObjective' in metadata %}
+      	{% for content in lesson.ContentObjective.all %}
+           <td class = "ContentObjective"> {{ content.contentObjective }} </td>
+           {% empty %}
+           <td class = "ContentObjective">  </td>
+      	{% endfor %}
+      	{% endif %}
+				{% if 'EnrichmentActivities' in metadata %}
+      	{% for enrichact in lesson.EnrichmentActivities.all %}
+						<td class = "EnrichmentActivities"> {{ enrichact.fileName }} </td>
+						<td class = "EnrichmentActivities"> {{ enrichact.title }} </td>
+        		{% empty %}
+           	<td class = "EnrichmentActivities">  </td>
+			<td class = "EnrichmentActivities">  </td>
+      	{% endfor %}
+      	{% endif %}
+		{% if 'Contexts' in metadata %}
+		{% for context in lesson.Contexts.all %}
+		    <td class = "Contexts"> {{ context.page }} </td>
+		    <td class = "Contexts"> {{ context.item }} </td>
+		    <td class = "Contexts"> {{ context.context }} </td>
+		    <td class = "Contexts"> {{ context.issues }} </td>
+		{% empty %}
+			<td class = "Contexts">  </td>
+			<td class = "Contexts">  </td>
+			<td class = "Contexts">  </td>
+			<td class = "Contexts">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'CrossCurricularConnections' in metadata %}
+		{% for ccc in lesson.CrossCurricularConnections.all %}
+			<td class = "CrossCurricularConnections"> {{ ccc.component }} </td>
+			<td class = "CrossCurricularConnections"> {{ ccc.contentArea }} </td>
+		{% empty %}
+			<td class = "CrossCurricularConnections">  </td>
+			<td class = "CrossCurricularConnections">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'DigitalTools' in metadata %}
+		{% for digitool in lesson.DigitalTools.all %}
+			<td class = "DigitalTools"> {{ digitool.baseTenBlocksTool }} </td>
+			<td class = "DigitalTools"> {{ digitool.perimeterAndAreaTool }} </td>
+			<td class = "DigitalTools"> {{ digitool.fractionModelsTool }} </td>
+			<td class = "DigitalTools"> {{ digitool.numberLineTool }} </td>
+			<td class = "DigitalTools"> {{ digitool.multiplicationModelsTool }} </td>
+			<td class = "DigitalTools"> {{ digitool.countersConnectingCubesTool }} </td>
+			{% empty %}
+			<td class = "DigitalTools">  </td>
+			<td class = "DigitalTools">  </td>
+			<td class = "DigitalTools">  </td>
+			<td class = "DigitalTools">  </td>
+			<td class = "DigitalTools">  </td>
+			<td class = "DigitalTools">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'EthnicityGenderAbility' in metadata %}
+		{% for ethgenab in lesson.EthnicityGenderAbility.all %}
+			<td class = "EthnicityGenderAbility"> {{ ethgenab.page }} </td>
+			<td class = "EthnicityGenderAbility"> {{ ethgenab.item }} </td>
+			<td class = "EthnicityGenderAbility"> {{ ethgenab.type }} </td>
+			<td class = "EthnicityGenderAbility"> {{ ethgenab.ethnicity }} </td>
+			<td class = "EthnicityGenderAbility"> {{ ethgenab.gender }} </td>
+			<td class = "EthnicityGenderAbility"> {{ ethgenab.ability }} </td>
+			<td class = "EthnicityGenderAbility"> {{ ethgenab.correctOrIncorrect }} </td>
+			{% empty %}
+			<td class = "EthnicityGenderAbility">  </td>
+			<td class = "EthnicityGenderAbility">  </td>
+			<td class = "EthnicityGenderAbility">  </td>
+			<td class = "EthnicityGenderAbility">  </td>
+			<td class = "EthnicityGenderAbility">  </td>
+			<td class = "EthnicityGenderAbility">  </td>
+			<td class = "EthnicityGenderAbility">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'FluencyActivities' in metadata %}
+		{% for fluencyact in lesson.FluencyActivities.all %}
+			<td class = "FluencyActivities"> {{ fluencyact.fluencyPracticeTitle }} </td>
+			{% empty %}
+			<td class = "FluencyActivities">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'GraphicOrganizers' in metadata %}
+		{% for graphorg in lesson.GraphicOrganizers.all %}
+			<td class = "GraphicOrganizers"> {{ graphorg.page }} </td>
+			<td class = "GraphicOrganizers"> {{ graphorg.graphicOrganizer }} </td>
+			{% empty %}
+			<td class = "GraphicOrganizers">  </td>
+			<td class = "GraphicOrganizers">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'InteractiveTutorial' in metadata %}
+		{% for intertutorial in lesson.InteractiveTutorial.all %}
+			<td class = "InteractiveTutorial"> {{ intertutorial.interactiveTutorial }} </td>
+			<td class = "InteractiveTutorial"> {{ intertutorial.videoID }} </td>
+			<td class = "InteractiveTutorial"> {{ intertutorial.objective }} </td>
+			<td class = "InteractiveTutorial"> {{ intertutorial.estimatedTime }} </td>
+			{% empty %}
+			<td class = "InteractiveTutorial">  </td>
+			<td class = "InteractiveTutorial">  </td>
+			<td class = "InteractiveTutorial">  </td>
+			<td class = "InteractiveTutorial">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'LanguageObjectives' in metadata %}
+		{% for langobj in lesson.LanguageObjectives.all %}
+			<td class = "LanguageObjectives"> {{ langobj.languageObjective }} </td>
+			{% empty %}
+			<td class = "LanguageObjectives">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'LearningGames' in metadata %}
+		{% for learngame in lesson.LearningGames.all %}
+			<td class = "LearningGames"> {{ learngame.learningGame }} </td>
+			{% empty %}
+			<td class = "LearningGames">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'LearningProgressionText' in metadata %}
+		{% for lrnprogtext in lesson.LearningProgressionText.all %}
+			<td class = "LearningProgressionText"> {{ lrnprogtext.previousLearning }} </td>
+			<td class = "LearningProgressionText"> {{ lrnprogtext.inThisLesson }} </td>
+			<td class = "LearningProgressionText"> {{ lrnprogtext.subsequentLearning }} </td>
+			{% empty %}
+			<td class = "LearningProgressionText">  </td>
+			<td class = "LearningProgressionText">  </td>
+			<td class = "LearningProgressionText">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'LessonNames' in metadata %}
+		{% for lesname in lesson.LessonNames.all %}
+			<td class = "LessonNames"> {{ lesname.lessonName }} </td>
+			{% empty %}
+			<td class = "LessonNames">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'Manipulatives' in metadata %}
+		{% for manip in lesson.Manipulatives.all %}
+			<td class = "Manipulatives"> {{ manip.manipulativeUsed }} </td>
+			<td class = "Manipulatives"> {{ manip.quantity }} </td>
+			<td class = "Manipulatives"> {{ manip.use }} </td>
+			<td class = "Manipulatives"> {{ manip.required }} </td>
+			<td class = "Manipulatives"> {{ manip.lesson }} </td>
+			<td class = "Manipulatives"> {{ manip.activities }} </td>
+			{% empty %}
+			<td class = "Manipulatives">  </td>
+			<td class = "Manipulatives">  </td>
+			<td class = "Manipulatives">  </td>
+			<td class = "Manipulatives">  </td>
+			<td class = "Manipulatives">  </td>
+			<td class = "Manipulatives">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'MathCenterActivities' in metadata %}
+		{% for mathctract in lesson.MathCenterActivities.all %}
+			<td class = "MathCenterActivities"> {{ mathctract.title }} </td>
+			<td class = "MathCenterActivities"> {{ mathctract.fileName }} </td>
+			{% empty %}
+			<td class = "MathCenterActivities">  </td>
+			<td class = "MathCenterActivities">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'Models' in metadata %}
+		{% for model in lesson.Models.all %}
+			<td class = "Models"> {{ model.model }} </td>
+			{% empty %}
+			<td class = "Models">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'PrerequisiteLessons' in metadata %}
+		{% for prereqless in lesson.PrerequisiteLessons.all %}
+			<td class = "PrerequisiteLessons"> {{ prereqless.prerequisiteLessonGrade }} </td>
+			<td class = "PrerequisiteLessons"> {{ prereqless.prerequisiteLessonNumber }} </td>
+			{% empty %}
+			<td class = "PrerequisiteLessons">  </td>
+			<td class = "PrerequisiteLessons">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'PrerequisiteInteractiveTutorial' in metadata %}
+		{% for preintertut in lesson.PrerequisiteInteractiveTutorial.all %}
+			<td class = "PrerequisiteInteractiveTutorial"> {{ preintertut.prerequisiteInteractiveTutorial }} </td>
+			<td class = "PrerequisiteInteractiveTutorial"> {{ preintertut.prerequisiteVideoID }} </td>
+			<td class = "PrerequisiteInteractiveTutorial"> {{ preintertut.prerequisiteObjective }} </td>
+			<td class = "PrerequisiteInteractiveTutorial"> {{ preintertut.prerequisiteEstimatedTime }} </td>
+			{% empty %}
+			<td class = "PrerequisiteInteractiveTutorial">  </td>
+			<td class = "PrerequisiteInteractiveTutorial">  </td>
+			<td class = "PrerequisiteInteractiveTutorial">  </td>
+			<td class = "PrerequisiteInteractiveTutorial">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'PrerequisiteSkill' in metadata %}
+		{% for prereqskill in lesson.PrerequisiteSkill.all %}
+			<td class = "PrerequisiteSkill"> {{ prereqskill.prerequisiteSkill }} </td>
+			{% empty %}
+			<td class = "PrerequisiteSkill">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'Rubrics' in metadata %}
+		{% for rubric in lesson.Rubrics.all %}
+			<td class = "Rubrics"> {{ rubric.page }} </td>
+			<td class = "Rubrics"> {{ rubric.component }} </td>
+			<td class = "Rubrics"> {{ rubric.typeOfRubric }} </td>
+			{% empty %}
+			<td class = "Rubrics">  </td>
+			<td class = "Rubrics">  </td>
+			<td class = "Rubrics">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'ToolsforInstruction' in metadata %}
+		{% for tfi in lesson.ToolsforInstruction.all %}
+		    <td class = "ToolsforInstruction"> {{ tfi.toolForInstruction }} </td>
+			{% empty %}
+		    <td class = "ToolsforInstruction">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'Vocabulary' in metadata %}
+		{% for vocab in lesson.Vocabulary.all %}
+			<td class = "Vocabulary"> {{ vocab.academic }} </td>
+			<td class = "Vocabulary"> {{ vocab.vocabularyTerm }} </td>
+			<td class = "Vocabulary"> {{ vocab.definition }} </td>
+			<td class = "Vocabulary"> {{ vocab.newOrReview }} </td>
+			<td class = "Vocabulary"> {{ vocab.vocabularyBoxPage }} </td>
+			{% empty %}
+			<td class = "Vocabulary">  </td>
+			<td class = "Vocabulary">  </td>
+			<td class = "Vocabulary">  </td>
+			<td class = "Vocabulary">  </td>
+			<td class = "Vocabulary">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'VisualModels' in metadata %}
+		{% for vismodel in lesson.VisualModels.all %}
+			<td class = "VisualModels"> {{ vismodel.pagewithVisualModel }} </td>
+			{% empty %}
+			<td class = "VisualModels">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'AcademicVocabulary' in metadata %}
+		{% for acaVoc in lesson.AcademicVocabulary.all %}
+			<td class = "AcademicVocabulary"> {{ acaVoc.word }} </td>
+			<td class = "AcademicVocabulary"> {{ acaVoc.definition }} </td>
+			<td class = "AcademicVocabulary"> {{ acaVoc.defIfFoundInGradeLevel }} </td>
+			<td class = "AcademicVocabulary"> {{ acaVoc.notes }} </td>
+			{% empty %}
+			<td class = "AcademicVocabulary">  </td>
+			<td class = "AcademicVocabulary">  </td>
+			<td class = "AcademicVocabulary">  </td>
+			<td class = "AcademicVocabulary">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'StandardsInLessons' in metadata %}
+		{% for standard in lesson.StandardsInLessons.all %}
+			<td class = "StandardInLessons"> {{ standard.standardCode }} </td>
+			<td class = "StandardInLessons"> {{ standard.focusDevelopingOrApplied }} </td>
+			<td class = "StandardInLessons"> {{ standard.standard.standardWording|default_if_none:""  }} </td>
+			<td class = "StandardInLessons"> {{ standard.standard.majorSuportingOrAdditional|default_if_none:"" }} </td>
+			{% empty %}
+			<td class = "StandardInLessons">  </td>
+			<td class = "StandardInLessons">  </td>
+			<td class = "StandardInLessons">  </td>
+			<td class = "StandardInLessons">  </td>
+		{% endfor %}
+		{% endif %}
+		{% if 'SMPsInLessons' in metadata %}
+		{% for smp in lesson.SMPsInLessons.all %}
+			<td class = "SMPsInLessons"> {{ smp.SMP.smp }} </td>
+			<td class = "SMPsInLessons"> {{ smp.SMP.SMPText }} </td>
+
+			{% empty %}
+			<td class = "SMPsInLessons">  </td>
+			<td class = "SMPsInLessons">  </td>
+
+		{% endfor %}
+		{% endif %}
+		{% if 'StandardsInUnits' in metadata %}
+		{% for standard in lesson.StandardsInUnits.all %}
+			<td class = "StandardInUnits"> {{ standard.standard.standard }} </td>
+			<td class = "StandardInUnits"> {{ standard.component }} </td>
+			<td class = "StandardInUnits"> {{ standard.item }} </td>
+			<td class = "StandardInUnits"> {{ standard.standard.standardWording|default_if_none:""  }} </td>
+			<td class = "StandardInUnits"> {{ standard.standard.majorSuportingOrAdditional|default_if_none:"" }} </td>
+			{% empty %}
+			<td class = "StandardInUnits">  </td>
+			<td class = "StandardInUnits">  </td>
+			<td class = "StandardInUnits">  </td>
+			<td class = "StandardInUnits">  </td>
+			<td class = "StandardInUnits">  </td>
+		{% endfor %}
+		{% endif %}
+
+
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+</div>
+  <div class="dt-more-container">
+     <button id="btn-example-load-more" style="display:none">Show More Rows</button>
+     <div class="form-submission">
+       <form id="lesson-to-add" method="POST">{% csrf_token %}
+         <input name="lesson-to-add" type="submit" id="addRowSubmit" style="display:none" value="Submit New Rows">
+       </form>
+     </div>
+  </div>
+
+{% endif %}
+{% endblock %}

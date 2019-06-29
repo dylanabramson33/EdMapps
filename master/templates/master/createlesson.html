@@ -1,0 +1,167 @@
+<html>
+
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+
+body {
+	font-family: Khmer UI;
+}
+
+.active {
+	background-color: #DCDCDC
+}
+
+#headerTitle {
+	font-size: 20px;
+	margin: 5px 0px 15px;
+	display: inline-block;
+}
+#headerImg {
+	vertical-align: bottom;
+	width: 90px;
+	margin: 5px 5px 16px 22px;
+	display: inline-block;
+	height: auto;
+	visibility: hidden;
+}
+
+.pageheader {
+	padding-top: 5px;
+}
+
+.selectorheader {
+	text-align: center;
+	margin-top: 35px;
+}
+
+.selectortext {
+	margin: 5px;
+}
+
+.lesson-column {
+	float: left;
+	text-align: center;
+	width: 25%;
+	margin-top: 10px;
+}
+
+}
+
+.metadata-column {
+	float: left;
+	text-align: center;
+	width: 33.33%;
+	padding-top: 10px;
+	
+}
+
+.lesson-search-bar {
+	width: 300px;
+	border: 1px solid grey;
+	margin: 10px;
+	margin-left: 35px;
+}
+
+.metadata-search-bar {
+	width: 1500px;
+	border: 1px solid grey;
+	margin: 10px;
+	text-align: center;
+	margin-top: 25px;
+}
+
+.metadata-selector {
+	margin-top: 20px;
+}
+
+.create-button {
+    background-color: #4d4d4d
+    border: none;
+    color: black;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+	padding: 20px 20px;
+	margin-left: 1350px;
+	margin-top: 20px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="pageheader">
+	<img src="../../../../staticfiles/ReadyLogo.png" id="headerImg">
+	<h2 id="headerTitle">EdMapp: Lesson Creator</h2>
+</div>
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="{% url 'masterview' %}">Home</a></li>
+      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Create New Lessons <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url 'duplicate' %}" >Duplicate Existing Lessons</a></li>
+          <li><a href="{% url 'CreateLesson' %}">Create New Lessons</a></li>
+        </ul>
+      </li>
+      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Search, Edit, Export <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url 'table' %}" >Find and Edit Metadata</a></li>
+          <li><a href="{% url 'export' %}">Export Metadata to Excel</a></li>
+        </ul>
+      </li>
+      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Modify Metadata <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="{% url 'modify' %}" >Modify & Upload Metadata</a></li>
+          <li><a href="{% url 'Delete' %}">Delete Lessons</a></li>
+        </ul>
+      </li>
+    </ul>
+	<ul class="nav navbar-nav navbar-right">
+		<li><a href="#logout">[Log out]</a></li>
+	</ul>
+  </div>
+</nav>
+
+<div class="selectorheader">
+	<h2 class="selectortext">Lesson Creator</h2>
+	<p class="selectortext">Enter values for lessons you would like to create</p>
+</div>
+
+<div class="lesson-selector">
+	<div class="lesson-column">
+		<h2 class="selectortext">Version</h2>
+		<div class="lesson-search-bar">
+			<p class="selectortext">Enter Version</p>
+		</div>
+	</div>
+	<div class="lesson-column">
+		<h2 class="selectortext">Grade</h2>
+		<div class="lesson-search-bar">
+			<p class="selectortext">Enter Grade</p>
+		</div>
+	</div>
+	<div class="lesson-column">
+		<h2 class="selectortext">Unit</h2>
+		<div class="lesson-search-bar">
+			<p class="selectortext">Enter Unit</p>
+		</div>
+	</div>
+	<div class="lesson-column">
+		<h2 class="selectortext">Lesson</h2>
+		<div class="lesson-search-bar">
+			<p class="selectortext">Enter Lesson</p>
+		</div>
+	</div>
+</div>
+	<button class="create-button" href="{% url 'duplicate' %}">Create</button>
+</div>
+
+</html>

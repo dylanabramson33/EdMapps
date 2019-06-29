@@ -1,0 +1,40 @@
+{% extends 'master/base.html' %}
+
+{% block headAndStyle %}
+
+{% load staticfiles %}
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        {% for field,values in fields %}
+        var {{field|safe}}data = new google.visualization.DataTable();
+        {{field|safe}}data .addColumn("string", "Field");
+        {{field|safe}}data .addColumn("number", "Count");
+
+        {{field|safe}}data .addRows({{values|safe}});
+
+
+        var options = {
+          title: "{{field|safe}}"
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById("{{field|safe}}"));
+
+        chart.draw({{field|safe}}data , options);
+        {% endfor %}
+      }
+
+    </script>
+  </head>
+  <body>
+    {% for field,value in fields %}
+    <div id="{{field}}" style="width: 900px; height: 500px;"></div>
+    {% endfor %}
+    
+  </body>
+
+{% endblock %}

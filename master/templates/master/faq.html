@@ -1,0 +1,61 @@
+{% extends 'master/base.html' %}
+
+{% block headAndStyle %}
+
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{% static 'master/tablestyle.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+{% endblock %}
+{% block header %}
+<h2 id="headerTitle">EdMapp: Home</h2>
+{% endblock %}
+{% block content %}
+
+<div class="welcome">
+	<h1 id="welcometext">Frequently Asked Questions (FAQ)</h1>
+</div>
+
+<div class="faq" id="">
+				<p class="question">Question 1</p><span class="caret expand"></span>
+				<div class="answer">
+
+					<p>Answer 1!</p>
+
+				</div>
+</div>
+
+<div class="faq" id="">
+				<p class="question">Question 2</p><span class="caret expand"></span>
+				<div class="answer">
+
+					<p>Answer 2!</p>
+
+				</div>
+</div>
+
+<div class="faq" id="">
+				<p class="question">Question 3</p><span class="caret expand"></span>
+				<div class="answer">
+
+					<p>Answer 4!</p>
+
+				</div>
+</div>
+
+<div class="faq" id="">
+				<p class="question">Question 4</p><span class="caret expand"></span>
+				<div class="answer">
+
+					<p>Answer 4!</p>
+
+				</div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'master/base.html' %}
+
+{% block headAndStyle %}
+
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{% static 'master/tablestyle.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+{% endblock %}
+{% block header %}
+<h2 id="headerTitle">EdMapp: Home</h2>
+{% endblock %}
+{% block content %}
+
+<div class="lesson-prof-body">
+	<div class="lesson-prof-top-column-1">
+		<div id="lessonOverview1">
+			Lesson
+		</div>
+		<div id="lessonOverview2">
+			Overview
+		</div>
+	</div>
+	<div class="lesson-prof-top-column-2">
+		<div id="lesson-header-1">
+			Lesson 18
+		</div>
+		<div id="lesson-header-2">
+			Comparing Fractions
+		</div>
+	</div>
+	<div class="lesson-prof-beige-body">
+		<div class="lesson-prof-beige-column">
+			<div class="ccss-focus-green-container">
+					<div id="ccss-text"> CCSS Focus
+					</div>
+					<div id="domain">
+							<div id="domain-header">Domain
+							</div>
+							<div id="domain-text">Number and Operations--Fractions
+							</div>
+					</div>
+					<div id="cluster">
+							<div id="cluster-header">Cluster
+							</div>
+							<div id="cluster-text">A. Extend understanding of fraction equivalence and ordering
+							</div>
+					</div>
+					<div id="standard">
+							<div id="standard-header">Standard
+							</div>
+							<div id="standard-text">4.NF.A.2 Compare two fractions with different numerators and different denominators, e.g., by creating common denominators or numerators, or by comparing to a benchmark fraction such as 1/2. Recognize that comparisons are valid only when the two fractions refer to the same whole. Record the results of comparisons with symbols >, =, or <, and justify the conclusions, e.g., by using a visual fraction model
+							</div>
+					</div>
+					<div id="addlStandard">
+							<div id="addlStandard-header">Additional Standard
+							</div>
+							<div id="addlStandard-text">4.NF.A.1 (See Standards Correlations at the end of the book for full text.)
+							</div>
+					</div>
+					<div id="SMP-body">
+						<div id="SMP-header">Standards for Mathematical Practice (SMP)
+						</div>
+						<div id="SMP-text">
+							<ol id="smp-ol">
+								<li>Make sense of problems and persevere in solving them.</li>
+								<li>Reason abstractly and quantitatively.</li>
+								<li>Construct viable arguments and critique the reasoning of others.</li>
+								<li>Model with mathematics.</li>
+								<li>Use appropriate tools strategically.</li>
+								<li>Look for and make use of structure.</li>
+							</ol>
+						</div>
+					</div>
+			</div>
+		</div>
+		<div class="lesson-prof-beige-column">
+				<div id="lesson-prof-objectives"> Lesson Objectives
+					<div id="lesson-prof-content-obj">
+						<h2 class="lesson-obj-header">Content Objectives</h2>
+						<ul class="content-obj-list">
+							<li>Use symbols (>, <, =) to compare fractions with different numerators and different denominators</li>
+							<li>Recognize that fractions with different denominators and the same numerators represent different values</li>
+							<li>Use common denominators and benchmark fractions to compare fractions with different denominators </li>
+							<li>Recognize that to compare two fractions both must refer to the same whole </li>
+						</ul>
+					</div>
+					<div id="lesson-prof-language-obj">
+						<h2 class="lesson-obj-header">Language Objectives</h2>
+						<ul class="lang-obj-list">
+							<li>Write fraction comparison statements using the symbols >, <, and = </li>
+							<li>Draw area models to compare two fractions</li>
+							<li>Orally explain how comparing both a fraction greater than 1/2 and a fraction less than 1/2 to 1/2 can be used to determine which fraction is greater </li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="lesson-prof-beige-column">
+					<div id="lesson-prof-vocab"> Lesson Vocabulary
+					</div>
+			</div>
+			<div id="lesson-prof-footer">
+					<div id="lesson-page-number">379a
+					</div>
+					<div id="lesson-number-and-title">Lesson 18 Compare Fractions
+					</div>
+					<div id="cainc-copyright">Curriculum Associates, LLC   Copying is not permitted.
+					</div>
+			</div>
+</div>
+
+{% endblock %}

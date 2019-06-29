@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+
+{% block headAndStyle %}
+{% endblock %}
+
+<body>
+
+<div class="pageheader">
+	<img src="{% static 'master/ReadyLogo.PNG' %}" id="headerImg">
+
+	{% block header %}
+	{% endblock %}
+
+</div>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <ul class="nav navbar-nav">
+      <li id="Home"><a href="{% url 'masterview' %}">Home</a></li>
+      <li id="Create" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Create New Lessons <span class="caret"></span></a>
+        <ul class="dropdown-menu new-lessons">
+          <li><a href="{% url 'duplicate' %}">Duplicate Existing Lessons</a></li>
+					<li><a href="{% url 'duplicationLogs' %}">Duplication History</a></li>
+        </ul>
+      </li>
+      <li id="Search" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Search, Edit, Export <span class="caret"></span></a>
+        <ul class="dropdown-menu search-edit-export">
+          <li><a href="{% url 'table' %}">Find and Edit Metadata</a></li>
+          <li><a href="{% url 'export' %}">Export Metadata to Excel</a></li>
+					<li><a href="{% url 'Delete' %}">Delete Lessons</a></li>
+					<li class="divider"></li>
+					<li><a href="{% url 'modify' %}">Modify Individual Tables</a></li>
+        </ul>
+      </li>
+			<li id="Future" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Future Developments<span class="caret"></span></a>
+        <ul class="dropdown-menu future-developments">
+          <li><a href="{% url 'lessonProfiles' %}">Lesson Profiles</a></li>
+          <li><a href="{% url 'reports' %}">Metadata Reporting</a></li>
+        </ul>
+      </li>
+    </ul>
+	<ul class="nav navbar-nav navbar-right">
+		<li id="Support" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> Support <span class="caret"></span></a>
+			<ul class="dropdown-menu support">
+				<li><a href="{% url 'faq' %}">FAQ</a></li>
+				<li><a href="{% url 'support' %}">Support</a></li>
+				<li><a href="{% url 'improve' %}">Improvements</a></li>
+			</ul>
+		</li>
+		<li><a href="{% url 'logout' %}?next=/">[Log out]</a></li>
+	</ul>
+  </div>
+</nav>
+
+	{% block content %}
+	{% endblock %}
+
+</body>
+<script src="{% static 'master/master.js' %}"></script>
+</html>

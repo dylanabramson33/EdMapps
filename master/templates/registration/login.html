@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html>
+
+
+
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'master/tablestyle.css' %}">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body id="loginBaseBody">
+
+  <div class="loginBody">
+    <img src="{% static 'master/ReadyLogo.PNG' %}" id="loginHeaderImg">
+    <p class="login-title">EdMapp Login</p>
+    <p class="login-directions">Log in using your LDAP credentials</p>
+    <form method="POST"> {% csrf_token %}
+      <div class="inputs">
+        {{ form.as_p }}
+      </div>
+      <button class="login-button" href="{% url 'masterview' %}">Login</button>
+    </form>
+
+  </div>
+
+</body>
+
+
+
+</html>

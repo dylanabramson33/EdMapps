@@ -1,0 +1,48 @@
+{% extends 'master/base.html' %}
+
+{% block headAndStyle %}
+
+{% load staticfiles %}
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{% static 'master/tablestyle.css' %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+{% endblock %}
+{% block header %}
+<h2 id="headerTitle">EdMapp: Home</h2>
+{% endblock %}
+{% block content %}
+
+<div class="welcome">
+	<h1 id="welcometext">Welcome to EdMapp</h1>
+</div>
+<hr class="style3">
+<div class="todayactions">
+	<p id="today">What would you like to do today?</p>
+	<div class="column">
+		<h2>Create New Lessons</h2>
+		<ul class="centered-list new-lessons">
+			<li><a href="{% url 'duplicate' %}">Duplicate an Existing Lesson</a></li>
+		</ul>
+	</div>
+	<div class="column">
+		<h2>Search, Edit, & Export</h2>
+		<ul class="centered-list search-edit-export">
+			<li><a href="{% url 'table' %}">Find and/or Edit Lesson Metadata</a></li>
+			<li><a href="{% url 'export' %}">Export Metadata to Excel</a></li>
+			<li><a href="{% url 'Delete' %}">Delete Lessons</a></li>
+		</ul>
+	</div>
+	<div class="column">
+		<h2>Modify Individual Tables</h2>
+		<ul class="centered-list search-edit-export">
+			<li><a href="{% url 'modify' %}">Modify & Upload Metadata Tables</a></li>
+		</ul>
+	</div>
+</div>
+
+{% endblock %}
