@@ -18,7 +18,7 @@ from datetime import timedelta
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY','a')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 
 # os.getenv('DEBUG',True)
